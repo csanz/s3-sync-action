@@ -42,7 +42,7 @@ ${AWS_REGION}
 text
 EOF
 
-sh -c "tar -cvf /tmp/latest/${BUILD_NAME}.tar ${SOURCE_DIR:-.}"
+sh -c "mkdir /tmp/latest/ ; tar -cvf /tmp/latest/${BUILD_NAME}.tar ${SOURCE_DIR:-.}"
 
 # Sync using our dedicated profile and suppress verbose messages.
 # All other flags are optional via the `args:` directive.
