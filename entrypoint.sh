@@ -17,6 +17,11 @@ if [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
   exit 1
 fi
 
+if [ -z "$BUILD_NAME" ]; then
+  echo "BUILD_NAME is not set. Quitting."
+  exit 1
+fi
+
 # Default to us-east-1 if AWS_REGION not set.
 if [ -z "$AWS_REGION" ]; then
   AWS_REGION="us-east-1"
@@ -37,9 +42,11 @@ ${AWS_REGION}
 text
 EOF
 
+sh -c "tar -cvf /tmp/${BUILD_NAME}.tar ${SOURCE_DIR:-.}"
+
 # Sync using our dedicated profile and suppress verbose messages.
 # All other flags are optional via the `args:` directive.
-sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
+sh -c "aws s3 sync /tmp/${BUILD_NAME}.tar s3://${AWS_S3_BUCKET}/${DEST_DIR} \
               --profile s3-sync-action \
               --no-progress \
               ${ENDPOINT_APPEND} $*"
